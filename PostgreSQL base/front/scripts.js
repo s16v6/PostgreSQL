@@ -8,14 +8,12 @@
 
     let token = localStorage.getItem('token');
 
-    // Функция для декодирования JWT (простая, без внешней библиотеки)
     function decodeJWT(token) {
         const payload = token.split('.')[1];
         const decoded = JSON.parse(atob(payload.replace(/-/g, '+').replace(/_/g, '/')));
         return decoded;
     }
 
-    // Проверить токен и роль на старте страницы
     if (token) {
         try {
             const decoded = decodeJWT(token);
@@ -73,14 +71,12 @@
         }
     });
 
-    // Обработка выхода
     logoutBtn.addEventListener('click', () => {
         localStorage.removeItem('token');
         token = null;
         showLogin();
     });
 
-    // Загрузка данных SKU с бэкенда
     async function loadData() {
         try {
             const response = await fetch('/sku', {  // Заменить на полный URL бэкенда, 'http://localhost:5000/sku'
@@ -97,7 +93,6 @@
         }
     }
 
-    // Рендер таблицы с данными
     function renderTable(data) {
         tableBody.innerHTML = '';
         data.forEach(item => {
@@ -115,7 +110,6 @@
             tableBody.appendChild(row);
         });
 
-        // Обработчики для сохранения изменений (inline-редактирование)
         document.querySelectorAll('.save-btn').forEach(btn => {
             btn.addEventListener('click', async () => {
                 const id = btn.dataset.id;
@@ -145,7 +139,6 @@
             });
         });
 
-        // Обработчики для удаления строк
         document.querySelectorAll('.delete-btn').forEach(btn => {
             btn.addEventListener('click', async () => {
                 if (confirm('Удалить эту запись?')) {
@@ -168,7 +161,6 @@
         });
     }
 
-    // Добавляет новые записи.
     addBtn.addEventListener('click', async () => {
         const newSku = document.getElementById('new-sku').value;
         const newMargin = +document.getElementById('new-margin').value;
