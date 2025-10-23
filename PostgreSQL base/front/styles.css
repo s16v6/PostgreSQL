@@ -1,0 +1,96 @@
+body {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f1f5f9;
+    color: #334155;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.card {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.form-control {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #d1d5db;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+
+#login-form .form-control {
+    width: 250px;
+}
+
+.btn-primary {
+    background-color: #1d4ed8;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.btn-secondary {
+    background-color: #6b7280;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.btn-danger {
+    background-color: #dc2626;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-left: 5px;
+}
+
+.table-striped {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.table-striped th, .table-striped td {
+    padding: 10px;
+    border-bottom: 1px solid #d1d5db;
+    text-align: left;
+}
+
+.table-striped tbody tr:nth-child(even) {
+    background-color: #f8fafc;
+}
+
+.table-striped input {
+    width: 90%;
+    border: 1px solid #d1d5db;
+    padding: 5px;
+    border-radius: 4px;
+}
+
+.hidden {
+    display: none;
+}
