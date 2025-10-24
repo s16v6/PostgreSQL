@@ -13,6 +13,8 @@ async def main():
 
     server = Server('localhost', 8000, [insert_route])
 
+    server.app['db'] = db
+
     await server.start()
 
     await register_models()
