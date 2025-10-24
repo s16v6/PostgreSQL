@@ -3,7 +3,7 @@ from typing import Sequence, Optional
 from datetime import date
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import desc # Импортируем desc для явного использования
+from sqlalchemy import desc, asc # Импортируем desc и asc для явного использования
 
 from database.models.RC_SKU_margin_history import RC_SKU_Margin_History 
 
@@ -70,7 +70,7 @@ async def get_margin_history_by_date(
     stmt = (
         select(RC_SKU_Margin_History)
         .where(RC_SKU_Margin_History.sku_id == sku_id)
-        .where(RC_SKU_Margin_History.target_date == target_date) # Изменено на target_date
+        .where(RC_SKU_Margin_History.target_date == target_date)
     )
     
     result = await session.execute(stmt)
@@ -92,7 +92,7 @@ async def get_all_margin_history_by_date(
     
     stmt = (
         select(RC_SKU_Margin_History)
-        .where(RC_SKU_Margin_History.target_date == target_date) # Изменено на target_date
+        .where(RC_SKU_Margin_History.target_date == target_date)
         .order_by(RC_SKU_Margin_History.sku_id)
         .limit(per_page)
         .offset(offset)
@@ -103,5 +103,55 @@ async def get_all_margin_history_by_date(
     metrics_page = result.scalars().all()
     
     logger.debug(f"Fetched {len(metrics_page)} margin history entries for date {target_date}")
+    
+    return metrics_page
+
+
+async def get_all_margin_history_for_sku(
+    session: AsyncSession,
+    sku_id: int
+) -> Sequence[RC_SKU_Margin_History]:
+    """Получает всю историю маржи для конкретного SKU, отсортированную по дате."""
+    logger.debug(f"Attempting to fetch all margin history entries for SKU ID: {sku_id}")
+    
+    # Получаем все записи для данного SKU, отсортированные по дате применения (target_date)
+    stmt = (
+        select(RC_SKU_Margin_History)
+        .where(RC_SKU_Margin_History.sku_id == sku_id)
+        .order_by(asc(RC_SKU_Margin_History.target_date), asc(RC_SKU_Margin_History.created_at))
+    )
+    
+    result = await session.execute(stmt)
+    
+    entries = result.scalars().all()
+    logger.info(f"Fetched {len(entries)} margin history entries for SKU ID: {sku_id}")
+        
+    return entries
+
+async def get_all_margin_history_paginated(
+    session: AsyncSession,
+    page: int = 1,
+    per_page: int = PER_PAGE_DEFAULT
+) -> Sequence[RC_SKU_Margin_History]:
+    """Получает все записи истории маржи с пагинацией, отсортированные по убыванию даты."""
+    if page < 1:
+        page = 1
+        
+    offset = (page - 1) * per_page
+    
+    logger.debug(f"Fetching all margin history, page={page}, per_page={per_page}")
+    
+    stmt = (
+        select(RC_SKU_Margin_History)
+        .order_by(desc(RC_SKU_Margin_History.target_date), desc(RC_SKU_Margin_History.created_at))
+        .limit(per_page)
+        .offset(offset)
+    )
+    
+    result = await session.execute(stmt)
+    
+    metrics_page = result.scalars().all()
+    
+    logger.debug(f"Fetched {len(metrics_page)} margin history entries.")
     
     return metrics_page
