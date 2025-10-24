@@ -19,16 +19,18 @@ class RC_SKU_Margin_History(Database.BASE):
         index=True,
         comment="ID записи SKU, к которой относится расчет"
     )  
-    calculated_margin_percent: Mapped[float] = mapped_column(
+    margin_percent: Mapped[float] = mapped_column(
         Numeric(10, 4), 
         nullable=False, 
-        comment="Вычисленный целевой процент маржи (результат формулы)"
+        comment="Процент маржи для данной записи"
     )
-    base_margin_percent: Mapped[float] = mapped_column(
-        Numeric(10, 4), 
-        nullable=False, 
-        comment="Базовый процент маржи, взятый за 'вчерашний' для расчета"
+
+    target_date: Mapped[datetime] = mapped_column(
+        Date,
+        server_default=func.current_date(), 
+        comment="Дата, на которую рассчитана маржа"
     )
+    
     created_at: Mapped[datetime] = mapped_column(
         Date,
         server_default=func.current_date(), 
