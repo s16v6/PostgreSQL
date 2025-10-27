@@ -1,4 +1,5 @@
 from aiohttp import web
+import aiohttp_cors
 from typing import List
 from .Router import Router, Route
 from .urls import urls
@@ -16,6 +17,17 @@ class Server:
 
     async def start(self) -> None:
         await Router.setup_urls(self.app, self.urls)
+
+        cors = aiohttp_cors.setup(self.app, defaults={
+                "*": aiohttp_cors.ResourceOptions(
+                        allow_credentials=True,
+                        expose_headers="*",
+                        allow_headers="*"
+                    )
+                })
+
+        for route in list(self.app.router.routes()):
+                    cors.add(route)
 
         runner = web.AppRunner(self.app)
         
